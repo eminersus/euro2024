@@ -7,6 +7,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -22,6 +23,15 @@ public class UserService {
         user.setEnabled(false);
         userRepository.save(user);
         sendVerificationEmail(user);
+    }
+
+    public User findByUsername(String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            throw new RuntimeException("User not found");
+        }
     }
 
     public void sendVerificationEmail(User user) {
@@ -43,4 +53,6 @@ public class UserService {
         // Find user by token and enable the user (not shown in this snippet)
         return true;
     }
+
+
 }
